@@ -1,246 +1,235 @@
- window.onload = function() {
-     initialize();
-   };
-// function initialize() {
-// Variables
-// Word List
-var wordList = [
-  "Aprilia",
-  "BMW",
-  "Ducati",
-  "Harley",
-  "Honda",
-  "Kawasaki",
-  "KTM",
-  "Suzuki",
-  "Triumph",
-  "Victory",
-  "Yamaha"
-];
-var wordString = "";
-var wordLettersArray = [];
-// Sound locations object
-var sound = {
-  "wrong" : {
-    src : "assets/sounds/SCREAM_4(1)mp3"
-  },
-  "right" : {
-    src : "assets/sounds/wickedwitchlaugh.mp3"
-  },
-  "start" : {
-    src: "assets/sounds/hauntedhouse.mp3"
-  }
-};
-// Boardstate messages
-var boardState = {
-  pressToStart: "Press space to start",
-  notSpacebar: "That is not Spacebar; try again!",
-  pressToGo: "Guess any letter key to GO!",
-  notALetter: "That is not a letter. Try again.",
-  alreadyGussed: "You already had that one! Guess another letter.",
-  gotIt: "Great you got that one! Guess another letter.",
-  missedIt: "Oops Missed that one! Guess another letter.",
-  gameOver: "Tank ran out of fuel; you crashed and burned. Press SPACEBAR to repair and fuel up for the next race.",
-  winGame: "CONGRADULATIONS!!! You won your race! Press SPACEBAR to fuel up and race again.",
-  alreadyMissed: "You tried that and missed already! Guess another letter."
+window.onload = function () {
+
+  var alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+        'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+        't', 'u', 'v', 'w', 'x', 'y', 'z'];
   
-};
-// Score and tallies
-var state = {
-  active: false,
-  gameOver: false
-};
-var wins = 0;
-writeWins(wins);
-var guessesLeft = 10;
-writeGussesLeft(guessesLeft);
-var lettersGussed = [];
-var keypress = "";
-var hiddenArray = [];
-var hiddenWord = "";
-writeToScreen(boardState.pressToStart);
-// };
-//    playSound(sound.start.url);
-// Functions for displaying content to user
-function writeToScreen(boardState) {
-  document.getElementById('messageBoard').textContent = boardState;
-}
-function writeGussesLeft(guess) {
-  document.getElementById('guessCount').textContent = guessesLeft + "0%";
-}
-function writeWins(win) {
-  document.getElementById('winCount').textContent = wins;
-}
-function nextGame() {
-  writeToScreen(boardState.pressToGo);
-  writeGussesLeft(guessesLeft);
-  writeWins(wins);
-  selectRandomWord(wordList);
-  console.log(wordString);
-}
-console.log("state active: " + state.active);
-document.onkeyup = function(event) { 
-  keypress = event.key ;
-  // Checking user inputs and activating gameplay
-  if (keypress != " " && (!(state.active))) { 
-      writeToScreen(boardState.notSpacebar);
-      playSound(sound.error.src);
-      return;
-  } else if (!(state.active)) {
-          state.active = true;
-          nextGame();
-          console.log("state active: " + state.active);
-          playSound(sound.start.src);
-          return;
-  } 
-  else if (!(isLetter(keypress))){
-      writeToScreen(boardState.notALetter);
-      playSound(sound.error.src);
-      console.log(keypress);
-      return;
+  var categories;         // Array of topics
+  var chosenCategory;     // Selected catagory
+  var getHint ;          // Word getHint
+  var word ;              // Selected word
+  var guess ;             // Geuss
+  var geusses = [ ];      // Stored geusses
+  var lives ;             // Lives
+  var counter ;           // Count correct geusses
+  var space;              // Number of spaces in word '-'
+
+  // Get elements
+  var showLives = document.getElementById("mylives");
+  var showCatagory = document.getElementById("scatagory");
+  var getHint = document.getElementById("hint");
+  var showClue = document.getElementById("clue");
+
+
+
+  // create alphabet ul
+  var buttons = function () {
+    myButtons = document.getElementById('buttons');
+    letters = document.createElement('ul');
+
+    for (var i = 0; i < alphabet.length; i++) {
+      letters.id = 'alphabet';
+      list = document.createElement('li');
+      list.id = 'letter';
+      list.innerHTML = alphabet[i];
+      check();
+      myButtons.appendChild(letters);
+      letters.appendChild(list);
+    }
   }
-  if (wordLettersArray.indexOf(keypress) !== -1) { // If letter exists in the wordLettersArray continue
-      var index = "";
-      index = wordLettersArray.indexOf(keypress);   // Find corresponding index for matching keypress
-      for (i = index; i < hiddenArray.length; i++) { // Look for every spot that matches keypress in wordsLetterArray
-          if (wordLettersArray[i] == keypress) { // When match is found replace the corresponding index item in hiddenArray
-              hiddenArray[i] = keypress;
-              fillSpaces(hiddenArray);  // Use fillSpaces to joing hiddenArray items into a single string and display to user
-          }
-      }
-      if (countInArray(hiddenArray, keypress) >= 1) { // If item hasn't been guessed before show got it message
-          writeToScreen(boardState.gotIt);
-          if ((writeGuess(keypress))) {
-              playSound(sound.right.src);
-          }
+    
   
-      } 
-
+  // Select Catagory
+  var selectCat = function () {
+    if (chosenCategory === categories[0]) {
+      catagoryName.innerHTML = "The Chosen Category Is Premier League Football Teams";
+    } else if (chosenCategory === categories[1]) {
+      catagoryName.innerHTML = "The Chosen Category Is Films";
+    } else if (chosenCategory === categories[2]) {
+      catagoryName.innerHTML = "The Chosen Category Is Cities";
+    }
   }
-  //  else if ((wordLettersArray[index] == hiddenArray[index]) && lettersGussed.indexOf(hiddenArray[index]) > -1) { // If letter has been gussed before (right or wrong) show already gussed message
-  // writeToScreen(boardState.alreadyGussed);
-  // console.log("this is happening")
-  // }
 
-  else {
-      console.log(guessesLeft);
-      if ((lettersGussed.indexOf(keypress) == -1) && (guessesLeft > 0)) {
-          guessesLeft--;
-          writeGussesLeft(guessesLeft);
-          writeToScreen(boardState.missedIt);
-          playSound(sound.wrong.src);
-          writeGuess(keypress);
-          console.log("this");
+  // Create geusses ul
+   result = function () {
+    wordHolder = document.getElementById('hold');
+    correct = document.createElement('ul');
+
+    for (var i = 0; i < word.length; i++) {
+      correct.setAttribute('id', 'my-word');
+      guess = document.createElement('li');
+      guess.setAttribute('class', 'guess');
+      if (word[i] === "-") {
+        guess.innerHTML = "-";
+        space = 1;
+      } else {
+        guess.innerHTML = "_";
       }
-      else {
-          writeGuess(keypress);
+
+      geusses.push(guess);
+      wordHolder.appendChild(correct);
+      correct.appendChild(guess);
+    }
+  }
+  
+  // Show lives
+   comments = function () {
+    showLives.innerHTML = "You have " + lives + " lives";
+    if (lives < 1) {
+      showLives.innerHTML = "Game Over";
+    }
+    for (var i = 0; i < geusses.length; i++) {
+      if (counter + space === geusses.length) {
+        showLives.innerHTML = "You Win!";
       }
-
+    }
   }
-}
 
-// Functions
-// Setup and start gameboard
+      // Animate man
+  var animate = function () {
+    var drawMe = lives ;
+    drawArray[drawMe]();
+  }
 
-// Select a word randomly from word list array
-function selectRandomWord(wordArray) {
-  var selectedWord = Math.floor(((Math.random()) * wordArray.length));
-  wordString = wordList[selectedWord].toLowerCase();
-  word2Array(wordString);
-  blankSpaces(wordLettersArray);
-  return wordString;
-}
-//Convert randomly selected word to array of letters
-function word2Array(motoBrand) {
-  wordLettersArray = motoBrand.split("");
-  return wordLettersArray;
-}
-// Put down placeholders for word on the gameboard
-function blankSpaces(lettersArray) {
-  for (i = 0; i < lettersArray.length; i++) {
-      hiddenArray.push("_");
-      fillSpaces (hiddenArray);
-  } 
-}
-// Check if input is a letter
-function isLetter(str){
-  str = str.toLowerCase();
-  return str.length === 1 && str.match(/[a-z]/i);
-}
-// Hold already gussed letters
-function writeGuess(keypress){
-  if (lettersGussed.indexOf(keypress) !== -1){
-      writeToScreen(boardState.alreadyGussed);
-      playSound(sound.repeat.src);
-      console.log("writeGuess already guessed")
-      return false;
-  } else {
-      lettersGussed.push(keypress);
-      var gussedStr = lettersGussed.join(", ")
-      document.getElementById('lettersGuessed').textContent = gussedStr.toLocaleUpperCase();
-      return true;
-  }
-}
-// Joing hiddenArray items into a single string seperated by spaces and display to user
-function fillSpaces(hiddenArray) {
-  hiddenWord = hiddenArray.join(" ");
-  document.getElementById('hiddenWord').textContent = hiddenWord.toLocaleUpperCase();
-}
-// check if item shows up more than once
-function countInArray(array, letter) {
-  var count = 0;
-  for (var i = 0; i < array.length; i++) {localStorage
-      if (array[i] === letter) {
-          count++;
-      }
-  }
-  console.log("countInArray is: " + count );
-  return count;
-}
-// Play game sounds
-function playSound(src){
-  var audio = document.createElement('audio');
-  audio.style.display = "none";
-  audio.src = src;
-  // audio.autoplay = true;
-  console.log(audio)
-  audio.play()
-  audio.onended = function(){
-    audio.remove() //Remove when played.
+  
+   // Hangman
+  canvas =  function(){
+
+    myStickman = document.getElementById("stickman");
+    context = myStickman.getContext('2d');
+    context.beginPath();
+    context.strokeStyle = "#fff";
+    context.lineWidth = 2;
   };
-  document.body.appendChild(audio);
+  
+    head = function(){
+      myStickman = document.getElementById("stickman");
+      context = myStickman.getContext('2d');
+      context.beginPath();
+      context.arc(60, 25, 10, 0, Math.PI*2, true);
+      context.stroke();
+    }
+    
+  draw = function($pathFromx, $pathFromy, $pathTox, $pathToy) {
+    
+    context.moveTo($pathFromx, $pathFromy);
+    context.lineTo($pathTox, $pathToy);
+    context.stroke(); 
 }
 
-// OSK Gen
-$(document).ready(function() {
-  // Here we are provided an initial array of letters.
-  // Use this array to dynamically create buttons on the screen.
-  var letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", " "];
-  for (var i = 0; i < letters.length - 1; i++) {
-      var letterBtn = $('<button>');
-      letterBtn.addClass("letter-button letter letter-button-color")
-          .attr("data-letter", letters[i])
-          .text(letters[i]);
-      $("#buttons").append(letterBtn);
-  }
-  var letterBtn = $('<button>');
-  letterBtn.addClass("letter-button letter letter-button-color")
-      .attr("data-letter", letters[letters.length])
-      .text("SPACEBAR");
-  $("#buttons").append(letterBtn);
-  $(".letter-button").on("click", function() {
-  var fridgeMagnet = $('<div>');
-      for (var i = 0; i < letters.length; i++) {
-          fridgeMagnet.addClass("letter fridge-color")
-          .text($(this)
-          .attr("data-letter"))
-          $("#display").append(fridgeMagnet);
-      }
-  console.log(fridgeMagnet);
-  });
-      $("#clear").on("click", function() {
-          var fridgeMagnet = $('#display');
-          fridgeMagnet.empty();
-      });
-  });
+   frame1 = function() {
+     draw (0, 150, 150, 150);
+   };
+   
+   frame2 = function() {
+     draw (10, 0, 10, 600);
+   };
   
+   frame3 = function() {
+     draw (0, 5, 70, 5);
+   };
+  
+   frame4 = function() {
+     draw (60, 5, 60, 15);
+   };
+  
+   torso = function() {
+     draw (60, 36, 60, 70);
+   };
+  
+   rightArm = function() {
+     draw (60, 46, 100, 50);
+   };
+  
+   leftArm = function() {
+     draw (60, 46, 20, 50);
+   };
+  
+   rightLeg = function() {
+     draw (60, 70, 100, 100);
+   };
+  
+   leftLeg = function() {
+     draw (60, 70, 20, 100);
+   };
+  
+  drawArray = [rightLeg, leftLeg, rightArm, leftArm,  torso,  head, frame4, frame3, frame2, frame1]; 
+
+
+  // OnClick Function
+   check = function () {
+    list.onclick = function () {
+      var geuss = (this.innerHTML);
+      this.setAttribute("class", "active");
+      this.onclick = null;
+      for (var i = 0; i < word.length; i++) {
+        if (word[i] === geuss) {
+          geusses[i].innerHTML = geuss;
+          counter += 1;
+        } 
+      }
+      var j = (word.indexOf(geuss));
+      if (j === -1) {
+        lives -= 1;
+        comments();
+        animate();
+      } else {
+        comments();
+      }
+    }
+  }
+  
+    
+  // Play
+  play = function () {
+    categories = [
+        ["everton", "liverpool", "swansea", "chelsea", "hull", "manchester-city", "newcastle-united"],
+        ["alien", "dirty-harry", "gladiator", "finding-nemo", "jaws"],
+        ["manchester", "milan", "madrid", "amsterdam", "prague"]
+    ];
+
+    chosenCategory = categories[Math.floor(Math.random() * categories.length)];
+    word = chosenCategory[Math.floor(Math.random() * chosenCategory.length)];
+    word = word.replace(/\s/g, "-");
+    console.log(word);
+    buttons();
+
+    guesses = [ ];
+    lives = 10;
+    counter = 0;
+    space = 0;
+    result();
+    comments();
+    selectCat();
+    canvas();
+  }
+
+  play();
+  
+  // Hint
+
+    hint.onclick = function() {
+
+      hints = [
+        ["Based in Mersyside", "Based in Mersyside", "First Welsh team to reach the Premier Leauge", "Owned by A russian Billionaire", "Once managed by Phil Brown", "2013 FA Cup runners up", "Gazza's first club"],
+        ["Science-Fiction horror film", "1971 American action film", "Historical drama", "Anamated Fish", "Giant great white shark"],
+        ["Northern city in the UK", "Home of AC and Inter", "Spanish capital", "Netherlands capital", "Czech Republic capital"]
+    ];
+
+    var catagoryIndex = categories.indexOf(chosenCategory);
+    var hintIndex = chosenCategory.indexOf(word);
+    showClue.innerHTML = "Clue: - " +  hints [catagoryIndex][hintIndex];
+  };
+
+   // Reset
+
+  document.getElementById('reset').onclick = function() {
+    correct.parentNode.removeChild(correct);
+    letters.parentNode.removeChild(letters);
+    showClue.innerHTML = "";
+    context.clearRect(0, 0, 400, 400);
+    play();
+  }
+}
+
+

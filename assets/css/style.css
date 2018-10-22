@@ -52,42 +52,34 @@ table {
 html{
 
 }
-body{
-    background-color: black;
-}
-header{
-    background: #000;
-}
+
 div.jumbotron{
     padding: 30px;
 
 }
-h1{
+
+div.header.jumbotron{
     background-color: orangered;
-    font-size: 90px;
-    font-family: 'Creepster', cursive;
-    color: #000;
 }
-h2{
-    font-family: 'Nanum Brush Script', cursive;
-    font-size: 45px;
-    color:white;
-    background-color: #000;
-}
-section.jumbotron{
-    outline-style: solid;
-    font-family: 'Nanum Brush Script', cursive;
-    font-size: 45px;
-    color:white;
-    background-color: #000;
-}
-h3.display-4{
+
+alphabet{
+    margin:15px auto;
+    padding:0;
+    max-width:900px;
     font-family: 'Creepster', cursive;
     color:orangered;
     border-left: white;
 }
-button{
 
+canvas{
+    color:white;
+    border: white solid 2px;
+    padding:15px;
+  }
+container{
+    font-family: 'Creepster', cursive;
+    color:orangered;
+    border-left: white;  
 }
 footer{
     background-color: orangered;
@@ -96,3 +88,100 @@ footer{
     color: #000;
     float: relative;
 }
+  body {
+    background:black;
+    font-family: 'Creepster', cursive;
+    color:black;
+    height:100%;
+    text-align:center;
+    font-size:18px;
+  }
+  
+  h1, h2, h3 {
+      font-family: 'Creepster', cursive
+      font-weight: 100;
+      text-transform: uppercase;
+     margin:5px 0;
+  }
+  
+  h1 {
+      font-size: 2.6em;
+      background-color: orangered;
+    
+  }
+  
+  h2 {
+      font-size: 1.6em;
+      font-family: 'Nanum Brush Script', cursive;
+        color:white;
+        background-color: #000;
+  }
+  
+  p{
+    font-size: 1.6em;
+    font-family: 'Nanum Brush Script', cursive;
+    color:black;   
+    background: green;
+  }
+  
+  #alphabet li {
+    float:left;
+    margin: 0 10px 10px 0;
+    list-style:none;
+    width:35px;
+    height:30px;
+    padding-top:10px;
+    background:white;
+    color:base-color;
+    cursor:pointer;
+  }
+  
+  #my-word {
+    margin: 0;
+    display: block;
+    padding: 0;
+    display:block;
+  }
+  
+  #my-word li {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    display: inline-block;
+    padding: 0 10px;
+    font-size:1.6em;
+  }
+  
+  active {
+    cursor:default;
+    
+  }
+  
+  #mylives{
+    font-size:1.6em;
+    text-align:center;
+    display:block;
+  }
+  
+  button{
+    border: solid 1px white;
+    font-size:1.2em;
+    padding:18px 10px;
+    width:180px;
+    margin: 10px;
+    outline: none;
+    font-family: 'Creepster', cursive;
+    color:orangered;
+  }
+  
+  @media (max-width: 767px) {
+    #alphabet {
+    padding:0 0 0 15px;
+  }
+    }
+  
+    @media (max-width: 480px) {
+    #alphabet {
+    padding:0 0 0 25px;
+  }
+    }
